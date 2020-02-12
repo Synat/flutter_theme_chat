@@ -1,12 +1,10 @@
 import 'dart:async';
-
 import 'package:emoji_picker/emoji_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_theme_chat/models/chat_provider.dart';
 import 'package:flutter_theme_chat/models/room_model.dart';
 import 'package:flutter_theme_chat/widgets/button_icon.dart';
 import 'package:flutter_theme_chat/widgets/chat_message.dart';
-import 'package:flutter_theme_chat/widgets/emoji_picker.dart';
 import 'package:flutter_theme_chat/widgets/theme_model.dart';
 import 'package:states_rebuilder/states_rebuilder.dart';
 
