@@ -17,6 +17,7 @@ class ChatMessage extends StatelessWidget {
           margin: const EdgeInsets.only(bottom: 6.0),
           child: Row(
             mainAxisAlignment: isMe ? MainAxisAlignment.end : MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
               if (!isMe)
                 CircleAvatar(

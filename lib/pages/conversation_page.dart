@@ -151,6 +151,17 @@ class _ConversationPageState extends State<ConversationPage> with TickerProvider
             onTap: () {},
           ),
           SizedBox(width: 12),
+          Expanded(
+            child: TextField(
+              controller: textEditingController,
+              decoration: InputDecoration(
+                border: OutlineInputBorder(borderRadius: BorderRadius.circular(32)),
+                hintText: "Message",
+                contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 0),
+              ),
+            ),
+          ),
+          SizedBox(width: 12),
           ButtonIcon(
             icon: Icons.tag_faces,
             onTap: () async {
@@ -163,17 +174,6 @@ class _ConversationPageState extends State<ConversationPage> with TickerProvider
                 ),
               );
             },
-          ),
-          SizedBox(width: 12),
-          Expanded(
-            child: TextField(
-              controller: textEditingController,
-              decoration: InputDecoration(
-                border: OutlineInputBorder(borderRadius: BorderRadius.circular(32)),
-                hintText: "Message",
-                contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 0),
-              ),
-            ),
           ),
           SizedBox(width: 12),
           ButtonIcon(
