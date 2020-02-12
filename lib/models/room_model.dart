@@ -6,5 +6,5 @@ class Room {
 }
 
 List<Room> rooms = [
-  Room("Chat room", "Welcome to chat room", "https://picsum.photos/210"),
+  Room("Chat room", "Welcome to chat room", "https://picsum.photos/200"),
 ];

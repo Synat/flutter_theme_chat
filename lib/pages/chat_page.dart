@@ -38,6 +38,7 @@ class _ChatPageState extends State<ChatPage> with SingleTickerProviderStateMixin
     return Column(
       children: <Widget>[
         StoryList(),
+        Divider(height: 0),
         Expanded(
           child: ListView.separated(
             separatorBuilder: (context, index) => Divider(height: 0),

@@ -4,6 +4,7 @@ import 'package:emoji_picker/emoji_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_theme_chat/models/chat_provider.dart';
 import 'package:flutter_theme_chat/models/room_model.dart';
+import 'package:flutter_theme_chat/widgets/button_icon.dart';
 import 'package:flutter_theme_chat/widgets/chat_message.dart';
 import 'package:flutter_theme_chat/widgets/emoji_picker.dart';
 import 'package:flutter_theme_chat/widgets/theme_model.dart';
@@ -30,7 +31,7 @@ class _ConversationPageState extends State<ConversationPage> with TickerProvider
       text: message,
       animationController: animationController,
       isMe: true,
-      user: "https://picsum.photos/300",
+      user: "https://picsum.photos/210",
     );
     sendMessageToSocket();
     chatMessage.animationController.forward();
@@ -56,7 +57,7 @@ class _ConversationPageState extends State<ConversationPage> with TickerProvider
         text: data['message'],
         animationController: animationController,
         isMe: data['sender'] == themeModel.sender,
-        user: widget.room.image,
+        user: "https://picsum.photos/240",
       );
       chatMessage.animationController.forward();
       chatProvider.onAddNewMessage(chatMessage);
@@ -145,13 +146,13 @@ class _ConversationPageState extends State<ConversationPage> with TickerProvider
       padding: EdgeInsets.symmetric(horizontal: 8, vertical: 16),
       child: Row(
         children: <Widget>[
-          InkWell(
-            child: Icon(Icons.photo, color: Theme.of(context).accentColor, size: 32),
+          ButtonIcon(
+            icon: Icons.photo,
             onTap: () {},
           ),
           SizedBox(width: 12),
-          InkWell(
-            child: Icon(Icons.tag_faces, color: Theme.of(context).accentColor, size: 32),
+          ButtonIcon(
+            icon: Icons.tag_faces,
             onTap: () async {
               showDialog(
                 context: context,
@@ -175,8 +176,8 @@ class _ConversationPageState extends State<ConversationPage> with TickerProvider
             ),
           ),
           SizedBox(width: 12),
-          InkWell(
-            child: Icon(Icons.send, color: Theme.of(context).accentColor, size: 32),
+          ButtonIcon(
+            icon: Icons.send,
             onTap: () => onSendMessage(textEditingController.text),
           ),
         ],
