@@ -116,7 +116,6 @@ class _MyHomePageState extends State<MyHomePage> {
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () {
           themeModel.changeBrightness();
-          themeModel.increment();
         },
         icon: Icon(Icons.refresh),
         label: Text("Change theme"),

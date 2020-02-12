@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_theme_chat/models/chat_model.dart';
+import 'package:flutter_theme_chat/models/room_model.dart';
 import 'package:flutter_theme_chat/pages/conversation_page.dart';
 import 'package:flutter_theme_chat/widgets/story_list.dart';
 import 'package:intl/intl.dart';
@@ -41,60 +41,42 @@ class _ChatPageState extends State<ChatPage> with SingleTickerProviderStateMixin
         Expanded(
           child: ListView.separated(
             separatorBuilder: (context, index) => Divider(height: 0),
-            itemCount: chats.length,
+            itemCount: rooms.length,
             addAutomaticKeepAlives: true,
             itemBuilder: (context, index) {
               var animation = Tween(begin: 0.0, end: 1.0).animate(CurvedAnimation(
                 parent: animationController,
-                curve: Interval((1 / chats.length) * index, 1.0, curve: Curves.fastOutSlowIn),
+                curve: Interval((1 / rooms.length) * index, 1.0, curve: Curves.fastOutSlowIn),
               ));
               return FadeTransition(
                 opacity: animation,
-                child: Dismissible(
-                  key: ValueKey(chats[index].name),
-                  confirmDismiss: (value) async {
-                    return false;
+                child: ListTile(
+                  leading: CircleAvatar(backgroundImage: NetworkImage(rooms[index].image)),
+                  title: Text("${rooms[index].name}"),
+                  onTap: () {
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (ctx) => ConversationPage(rooms[index]),
+                      ),
+                    );
                   },
-                  background: Container(
-                    color: Colors.red,
-                    child: Row(
-                      children: <Widget>[
-                        SizedBox(width: 16),
-                        Icon(Icons.delete, color: Colors.white),
-                        SizedBox(width: 16),
-                        Icon(Icons.archive, color: Colors.white),
-                      ],
-                    ),
+                  subtitle: Row(
+                    children: <Widget>[
+                      Text(
+                        "${rooms[index].featureMessage}",
+                        style: Theme.of(context).textTheme.caption,
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(6.0),
+                        child: Icon(Icons.fiber_manual_record, size: 8),
+                      ),
+                      Text(
+                        "${formatDate(DateTime.now().toLocal())}",
+                        style: Theme.of(context).textTheme.caption,
+                      ),
+                    ],
                   ),
-                  //onDismissed: (direction) {},
-                  child: ListTile(
-                    leading: CircleAvatar(backgroundImage: NetworkImage(chats[index].image)),
-                    title: Text("${chats[index].name}"),
-                    onTap: () {
-                      Navigator.of(context).push(
-                        MaterialPageRoute(
-                          builder: (ctx) => ConversationPage(chats[index]),
-                        ),
-                      );
-                    },
-                    subtitle: Row(
-                      children: <Widget>[
-                        Text(
-                          "${chats[index].lastMessage}",
-                          style: Theme.of(context).textTheme.caption,
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.all(6.0),
-                          child: Icon(Icons.fiber_manual_record, size: 8),
-                        ),
-                        Text(
-                          "${formatDate(DateTime.now().toLocal())}",
-                          style: Theme.of(context).textTheme.caption,
-                        ),
-                      ],
-                    ),
-                    //trailing: Icon(Icons.arrow_forward_ios),
-                  ),
+                  //trailing: Icon(Icons.arrow_forward_ios),
                 ),
               );
             },

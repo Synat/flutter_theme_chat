@@ -16,7 +16,7 @@ class _EmojiPickerDialogState extends State<EmojiPickerDialog> {
       children: <Widget>[
         EmojiPicker(
           rows: 7,
-          selectedCategory: Category.RECENT,
+          selectedCategory: Category.SMILEYS,
           columns: 7,
           recommendKeywords: ["smile", "chicken"],
           numRecommended: 10,

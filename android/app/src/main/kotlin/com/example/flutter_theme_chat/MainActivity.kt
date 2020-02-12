@@ -1,4 +1,4 @@
-package com.example.flutter_theme_chat
+package com.chunlee.flutter_theme_chat
 
 import androidx.annotation.NonNull;
 import io.flutter.embedding.android.FlutterActivity

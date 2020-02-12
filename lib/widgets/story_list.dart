@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_theme_chat/models/chat_model.dart';
+import 'package:flutter_theme_chat/models/story_model.dart';
 
 class StoryList extends StatelessWidget {
   @override
@@ -20,7 +20,7 @@ class StoryList extends StatelessWidget {
     );
   }
 
-  Widget buildStoryItem(Chat chat, context) {
+  Widget buildStoryItem(Story story, context) {
     return Container(
       margin: EdgeInsets.only(right: 12),
       child: Column(
@@ -35,10 +35,10 @@ class StoryList extends StatelessWidget {
               border: Border.all(width: 2.0, color: Theme.of(context).accentColor),
             ),
             child: CircleAvatar(
-              backgroundImage: NetworkImage(chat.image),
+              backgroundImage: NetworkImage(story.image),
             ),
           ),
-          Text(chat.name),
+          Text(story.name),
         ],
       ),
     );
