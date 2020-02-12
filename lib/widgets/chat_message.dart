@@ -1,14 +1,20 @@
 import 'package:flutter/material.dart';
+import 'package:states_rebuilder/states_rebuilder.dart';
+
+import 'theme_model.dart';
 
 class ChatMessage extends StatelessWidget {
   final String text;
   final String user;
   final AnimationController animationController;
-  final bool isMe;
+  final DateTime sendDate;
+  final String sender;
 
-  ChatMessage({this.text, this.animationController, this.isMe = true, this.user});
+  ChatMessage({this.text, this.animationController, this.sender, this.user, this.sendDate});
   @override
   Widget build(BuildContext context) {
+    ThemeModel themeModel = Injector.get(context: context);
+    bool isMe = themeModel.sender == sender;
     return SizeTransition(
         sizeFactor: CurvedAnimation(parent: animationController, curve: Curves.easeOut), //new
         axisAlignment: 0.0,

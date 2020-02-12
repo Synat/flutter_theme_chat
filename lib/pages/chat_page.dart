@@ -9,6 +9,11 @@ String formatDate(DateTime dateTime) {
   return formatter.format(dateTime);
 }
 
+String formatDateTime(DateTime dateTime) {
+  var formatter = DateFormat('hh:mm');
+  return formatter.format(dateTime);
+}
+
 class ChatPage extends StatefulWidget {
   @override
   _ChatPageState createState() => _ChatPageState();

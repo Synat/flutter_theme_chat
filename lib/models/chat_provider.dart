@@ -12,7 +12,7 @@ class ChatProvider extends StatesRebuilder {
   }
 
   void initSocket() async {
-    socket = IO.io('https://simple-chat-socket.chunleethong.com', <String, dynamic>{
+    socket = IO.io('http://192.168.0.108:3000', <String, dynamic>{
       'transports': ["websocket"],
       "autoConnect": false
     });
@@ -28,7 +28,7 @@ class ChatProvider extends StatesRebuilder {
 
   void dispose() {
     socket.disconnect();
-    messages.clear();
+    //messages.clear();
     socket.destroy();
     socket.clearListeners();
   }

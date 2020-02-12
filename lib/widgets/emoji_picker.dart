@@ -1,6 +1,8 @@
 import 'package:emoji_picker/emoji_picker.dart';
 import 'package:flutter/material.dart';
 
+import 'button_icon.dart';
+
 class EmojiPickerDialog extends StatefulWidget {
   final Function(Emoji) onEmojiSelected;
   EmojiPickerDialog({this.onEmojiSelected});
@@ -14,6 +16,13 @@ class _EmojiPickerDialogState extends State<EmojiPickerDialog> {
     return Column(
       mainAxisAlignment: MainAxisAlignment.end,
       children: <Widget>[
+        Material(
+          color: Colors.white,
+          child: ButtonIcon(
+            icon: Icons.check,
+            onTap: () => Navigator.of(context).pop(),
+          ),
+        ),
         EmojiPicker(
           rows: 7,
           selectedCategory: Category.SMILEYS,

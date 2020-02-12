@@ -10,6 +10,8 @@ import 'package:flutter_theme_chat/widgets/emoji_picker.dart';
 import 'package:flutter_theme_chat/widgets/theme_model.dart';
 import 'package:states_rebuilder/states_rebuilder.dart';
 
+import 'chat_page.dart';
+
 class ConversationPage extends StatefulWidget {
   final Room room;
   ConversationPage(this.room);
@@ -22,6 +24,9 @@ class _ConversationPageState extends State<ConversationPage> with TickerProvider
   ScrollController scrollController;
   ChatProvider chatProvider;
   ThemeModel themeModel;
+  FocusNode focusNode;
+  bool isShowingEmoji = false;
+  num client = 0;
   final scaffoldKey = new GlobalKey<ScaffoldState>();
   //method
   void onSendMessage(String message) {
@@ -30,13 +35,17 @@ class _ConversationPageState extends State<ConversationPage> with TickerProvider
     var chatMessage = ChatMessage(
       text: message,
       animationController: animationController,
-      isMe: true,
+      sendDate: DateTime.now(),
+      sender: themeModel.sender,
       user: "https://picsum.photos/210",
     );
     sendMessageToSocket();
     chatMessage.animationController.forward();
     textEditingController.clear();
-    FocusScope.of(context).unfocus();
+    //FocusScope.of(context).unfocus();
+    setState(() {
+      isShowingEmoji = false;
+    });
   }
 
   void sendMessageToSocket() {
@@ -56,23 +65,41 @@ class _ConversationPageState extends State<ConversationPage> with TickerProvider
       var chatMessage = ChatMessage(
         text: data['message'],
         animationController: animationController,
-        isMe: data['sender'] == themeModel.sender,
+        sendDate: DateTime.now(),
+        sender: data['sender'],
         user: "https://picsum.photos/240",
       );
       chatMessage.animationController.forward();
       chatProvider.onAddNewMessage(chatMessage);
       await Future.delayed(Duration(milliseconds: 200));
-      scrollController.jumpTo(scrollController.position.maxScrollExtent);
+      animateToBottom();
     });
+
+    chatProvider.socket.on("clients", (data) {
+      print("Clients: ${data['clients']}");
+      setState(() {
+        client = data['clients'];
+      });
+    });
+  }
+
+  void animateToBottom() async {
+    await scrollController.animateTo(
+      scrollController.position.maxScrollExtent,
+      curve: Curves.linear,
+      duration: Duration(milliseconds: 200),
+    );
   }
 
   @override
   void initState() {
     textEditingController = TextEditingController();
     scrollController = ScrollController();
+    focusNode = FocusNode();
     WidgetsBinding.instance.addPostFrameCallback((d) {
       chatProvider.initSocket();
       initSocketConfiguration();
+      animateToBottom();
     });
     super.initState();
   }
@@ -80,9 +107,9 @@ class _ConversationPageState extends State<ConversationPage> with TickerProvider
   @override
   void dispose() {
     textEditingController.dispose();
-    for (ChatMessage chatMessage in chatProvider.messages) {
-      chatMessage.animationController.dispose();
-    }
+    // for (ChatMessage chatMessage in chatProvider.messages) {
+    //   chatMessage.animationController.dispose();
+    // }
     chatProvider.dispose();
     super.dispose();
   }
@@ -102,7 +129,7 @@ class _ConversationPageState extends State<ConversationPage> with TickerProvider
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
                 Text(widget.room.name),
-                Text("Active now", style: Theme.of(context).textTheme.caption),
+                Text("Active now ($client people)", style: Theme.of(context).textTheme.caption),
               ],
             ),
           ],
@@ -115,12 +142,33 @@ class _ConversationPageState extends State<ConversationPage> with TickerProvider
       ),
       body: SafeArea(
         top: false,
-        child: Container(
+        child: InkWell(
+          splashColor: Colors.transparent,
+          highlightColor: Colors.transparent,
+          hoverColor: Colors.transparent,
+          focusColor: Colors.transparent,
+          onTap: () {
+            FocusScope.of(context).unfocus();
+            setState(() {
+              isShowingEmoji = false;
+            });
+          },
           child: Column(
             children: <Widget>[
               buildConversationList(),
               Divider(height: 0),
               buildMessageComposer(),
+              if (MediaQuery.of(context).viewInsets.bottom < 24 && isShowingEmoji)
+                EmojiPicker(
+                  rows: 4,
+                  selectedCategory: Category.SMILEYS,
+                  columns: 7,
+                  recommendKeywords: ["smile", "chicken"],
+                  numRecommended: 10,
+                  onEmojiSelected: (Emoji emoji, category) {
+                    textEditingController.text = textEditingController.text + emoji.emoji;
+                  },
+                ),
             ],
           ),
         ),
@@ -135,7 +183,14 @@ class _ConversationPageState extends State<ConversationPage> with TickerProvider
         itemCount: chatProvider.messages.length,
         controller: scrollController,
         itemBuilder: (context, index) {
-          return chatProvider.messages[index];
+          return Column(
+            children: <Widget>[
+              if (index == 0) Text(formatDateTime(chatProvider.messages[index].sendDate)),
+              if (index != 0 && chatProvider.messages[index - 1].sendDate.minute != chatProvider.messages[index].sendDate.minute)
+                Text(formatDateTime(chatProvider.messages[index].sendDate)),
+              chatProvider.messages[index],
+            ],
+          );
         },
       ),
     );
@@ -153,6 +208,11 @@ class _ConversationPageState extends State<ConversationPage> with TickerProvider
           SizedBox(width: 12),
           Expanded(
             child: TextField(
+              focusNode: focusNode,
+              onTap: () {
+                isShowingEmoji = false;
+                animateToBottom();
+              },
               controller: textEditingController,
               decoration: InputDecoration(
                 border: OutlineInputBorder(borderRadius: BorderRadius.circular(32)),
@@ -165,14 +225,11 @@ class _ConversationPageState extends State<ConversationPage> with TickerProvider
           ButtonIcon(
             icon: Icons.tag_faces,
             onTap: () async {
-              showDialog(
-                context: context,
-                builder: (dialogContext) => EmojiPickerDialog(
-                  onEmojiSelected: (Emoji emoji) {
-                    textEditingController.text = textEditingController.text + emoji.emoji;
-                  },
-                ),
-              );
+              FocusScope.of(context).unfocus();
+              animateToBottom();
+              setState(() {
+                isShowingEmoji = !isShowingEmoji;
+              });
             },
           ),
           SizedBox(width: 12),
